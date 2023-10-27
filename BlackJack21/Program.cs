@@ -2,7 +2,7 @@
 using static Program;
 
 
- class Program
+class Program
 {
     public enum palosCartas
     {
@@ -26,61 +26,68 @@ using static Program;
         }
 
 
-    public void mostrarCarta()
+        public void mostrarCarta()
         {
             Console.WriteLine($"Carta: {Valor} de {palosCartas}.");
         }
 
     }
 
-public class Baraja
-{
-    private List<Carta> cartas;
-    private Random random;
-
-    public Baraja()
+    public class Baraja
     {
-        cartas = new List<Carta>();
-        random = new Random();
+        private List<Carta> cartas;
+        private Random random;
 
-        foreach (palosCartas paloCarta in Enum.GetValues(typeof(palosCartas))) 
+        public Baraja()
         {
-            for (int value = 1; value <= 13; value++)
+            cartas = new List<Carta>();
+            random = new Random();
+
+            foreach (palosCartas paloCarta in Enum.GetValues(typeof(palosCartas)))
             {
-                cartas.Add(new Carta(paloCarta, value));
-                //Console.WriteLine($"Carta: {value} de {paloCarta}.");
+                for (int value = 1; value <= 13; value++)
+                {
+                    cartas.Add(new Carta(paloCarta, value));
+                    //Console.WriteLine($"Carta: {value} de {paloCarta}.");
+                }
             }
         }
-    }
 
-    public void Barajar() 
-    {
-        int n = cartas.Count;
-        while (n > 1)
+        public int CantidadCartasBaraja()
         {
-            n--;
-            int k = random.Next(n + 1);
-            Carta carta = cartas[k];
-            cartas[k] = cartas[n];
-            cartas[n] = carta;
-            //Console.WriteLine($"{carta.palosCartas} + {carta.Valor}");
-        }
-    }
-
-    public int CantidadCartasBaraja()
-        {
-            Console.WriteLine($"{cartas.Count}");
             return cartas.Count;
         }
+
+        public void Barajar()
+        {
+            int n = CantidadCartasBaraja();
+            while (n > 1)
+            {
+                n--;
+                int k = random.Next(n + 1);
+                Carta carta = cartas[k];
+                cartas[k] = cartas[n];
+                cartas[n] = carta;
+                //Console.WriteLine($"{carta.palosCartas} + {carta.Valor}");
+            }
+        }
+
+        public Carta RobarCarta(int contador)
+        {
+            Carta cartaRobada = cartas[contador];
+            Console.WriteLine(cartaRobada.Valor);
+            return cartaRobada;
+        }
+
     }
 
     static void Main(string[] args)
     {
         Baraja baraja = new Baraja();
         baraja.Barajar();
-        baraja.CantidadCartasBaraja();
         Carta carta1 = new Carta(palosCartas.picas, 2);
-        carta1.mostrarCarta();
+        //carta1.mostrarCarta();
+        Console.WriteLine(baraja.RobarCarta(1)+ " Esto es aqui");
     }
 
 }
