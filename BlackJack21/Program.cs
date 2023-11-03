@@ -25,6 +25,10 @@ class Program
             Valor = valor;
         }
 
+        public int conseguirValor()
+        {
+            return Valor;
+        }
 
         public void mostrarCarta()
         {
@@ -53,14 +57,14 @@ class Program
             }
         }
 
-        public int CantidadCartasBaraja()
+        public int cantidadCartasBaraja()
         {
             return cartas.Count;
         }
 
         public void Barajar()
         {
-            int n = CantidadCartasBaraja();
+            int n = cantidadCartasBaraja();
             while (n > 1)
             {
                 n--;
@@ -72,22 +76,61 @@ class Program
             }
         }
 
-        public Carta RobarCarta(int contador)
+        public Carta robarCarta(int contador)
         {
             Carta cartaRobada = cartas[contador];
-            Console.WriteLine(cartaRobada.Valor);
+            //Console.WriteLine(cartaRobada.Valor);
             return cartaRobada;
         }
 
     }
 
+    public class JugadorCartas
+    {
+        private List<Carta> manoJugador;
+
+        public string nombre { get; }
+        
+
+        public JugadorCartas(string Nombre)
+        {
+            Nombre = nombre;
+            manoJugador = new List<Carta>();
+        }
+        //Console.ReadLine()
+        public void AgarrarCarta(Carta cartaRobada)
+        {
+            manoJugador.Add(cartaRobada);
+        }
+
+        public void mostrarCartas()
+        {
+            foreach (Carta cartas in manoJugador)
+            {
+                Console.WriteLine(cartas.Valor + " " + cartas.palosCartas);
+            }
+        }
+    }
+
+
     static void Main(string[] args)
     {
+  
         Baraja baraja = new Baraja();
         baraja.Barajar();
         Carta carta1 = new Carta(palosCartas.picas, 2);
         //carta1.mostrarCarta();
-        Console.WriteLine(baraja.RobarCarta(1)+ " Esto es aqui");
+        //JugadorCartas jugador = new JugadorCartas(Console.ReadLine() ?? "");
+        JugadorCartas jugador = new JugadorCartas("Jimmy");
+        int n = (baraja.cantidadCartasBaraja()-1);
+        while (n > 0)
+        {
+            jugador.AgarrarCarta(baraja.robarCarta(n));
+            n--;
+        }
+        
+        jugador.mostrarCartas();
+        Console.WriteLine(jugador.nombre);
     }
 
 }
