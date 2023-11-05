@@ -23,7 +23,6 @@ class Program
         {
             palosCartas = paloCarta;
             Valor = valor;
-                //>= 10 ? 10 : valor;
         }
 
         private string ValoresEspeciales()
@@ -127,7 +126,7 @@ class Program
             foreach (Carta cartas in manoJugador)
             {
                 Console.WriteLine($"Mano del jugador: {Nombre}");
-                Console.WriteLine(cartas.Valor + " " + cartas.palosCartas);
+                cartas.mostrarCarta();
             }
         }
 
@@ -195,22 +194,22 @@ class Program
     static void Main(string[] args)
     {
 
-
+        //baraja.MostrarCartas();
         Console.WriteLine("Partida de BlackJack");
         Console.WriteLine("Introduce tu nombre:");
         jugador = new JugadorBlackJack(Console.ReadLine() ?? "");
 
         IniciarJuego();
 
-        bool hasFinished = false;
-        while (!hasFinished)
+        bool jugando = false;
+        while (!jugando)
         {
             Console.WriteLine($"Tienes {jugador.Puntuacion} puntos");
             if (jugador.Puntuacion == 21) break;
 
             string respuesta = OtraCarta();
 
-            if (respuesta == "n") hasFinished = true;
+            if (respuesta == "n") jugando = true;
             else
             {
                 Console.Clear();
@@ -218,7 +217,7 @@ class Program
                 MostrarBarajas();
             }
             jugador.CalcularPuntuación();
-            if (jugador.Bust() || jugador.Puntuacion == 21) hasFinished = true;
+            if (jugador.Bust() || jugador.Puntuacion == 21) jugando = true;
         }
 
         croupier.SacarCartas(baraja);
