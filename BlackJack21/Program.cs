@@ -52,9 +52,19 @@ class Program
                 for (int value = 1; value <= 13; value++)
                 {
                     cartas.Add(new Carta(paloCarta, value));
-                    //Console.WriteLine($"Carta: {value} de {paloCarta}.");
+
                 }
             }
+        }
+
+        public void mostrarCartas()
+        {
+            foreach (Carta cartas in cartas)
+            {
+                Console.WriteLine(cartas.Valor + " " + cartas.palosCartas);
+            }
+           
+               
         }
 
         public int cantidadCartasBaraja()
@@ -72,14 +82,12 @@ class Program
                 Carta carta = cartas[k];
                 cartas[k] = cartas[n];
                 cartas[n] = carta;
-                //Console.WriteLine($"{carta.palosCartas} + {carta.Valor}");
             }
         }
 
         public Carta robarCarta(int contador)
         {
             Carta cartaRobada = cartas[contador];
-            //Console.WriteLine(cartaRobada.Valor);
             return cartaRobada;
         }
 
@@ -88,16 +96,16 @@ class Program
     public class JugadorCartas
     {
         private List<Carta> manoJugador;
-
-        public string nombre { get; }
+        
+        public string Nombre { get; }
         
 
-        public JugadorCartas(string Nombre)
+        public JugadorCartas(string nombre)
         {
             Nombre = nombre;
             manoJugador = new List<Carta>();
         }
-        //Console.ReadLine()
+
         public void AgarrarCarta(Carta cartaRobada)
         {
             manoJugador.Add(cartaRobada);
@@ -107,30 +115,91 @@ class Program
         {
             foreach (Carta cartas in manoJugador)
             {
+                Console.WriteLine($"Mano del jugador: {Nombre}");
                 Console.WriteLine(cartas.Valor + " " + cartas.palosCartas);
+            }
+        }
+
+    }
+
+    public class jugadorBlackJack : JugadorCartas
+    {
+        public int puntuación = 0;
+        public jugadorBlackJack(string nombre) : base(nombre)
+        {
+        }
+
+
+        public int comprobarAs()
+        {    
+            if (sumarPuntos() > 10)
+            {
+                return 1;
+            }
+            else
+            {
+                return 11;
+            }
+        }
+
+        public bool Victoria()
+        {
+            if (sumarPuntos() > 21)
+            {
+                return false;
+            }
+            else if (sumarPuntos() == 21)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
             }
         }
     }
 
-
     static void Main(string[] args)
     {
-  
+        
+
         Baraja baraja = new Baraja();
         baraja.Barajar();
-        Carta carta1 = new Carta(palosCartas.picas, 2);
+        //Carta carta;
+        
         //carta1.mostrarCarta();
         //JugadorCartas jugador = new JugadorCartas(Console.ReadLine() ?? "");
-        JugadorCartas jugador = new JugadorCartas("Jimmy");
-        int n = (baraja.cantidadCartasBaraja()-1);
-        while (n > 0)
-        {
-            jugador.AgarrarCarta(baraja.robarCarta(n));
-            n--;
-        }
-        
+        jugadorBlackJack jugador = new jugadorBlackJack("Jimmy");
+        jugador.AgarrarCarta(baraja.robarCarta(51));
+        jugador.AgarrarCarta(baraja.robarCarta(50));
         jugador.mostrarCartas();
-        Console.WriteLine(jugador.nombre);
+        bool comprobar = jugador.Victoria();
+        int n = (baraja.cantidadCartasBaraja()-3);
+       if (comprobar == true)
+        {
+            Console.WriteLine("Has ganado");
+        }
+        else
+        {
+            while (comprobar)
+            {
+                jugador.sumarPuntos();
+                //Console.WriteLine("puntos "+jugador.sumarPuntos());
+                comprobar = jugador.Victoria();
+                Console.WriteLine(comprobar);
+
+
+                jugador.AgarrarCarta(baraja.robarCarta(n));
+                jugador.mostrarCartas();
+
+
+                //Console.WriteLine("n vale " + n);
+                n--;
+            }
+        }
+
+
+        Console.WriteLine(jugador.Nombre);
     }
 
 }
