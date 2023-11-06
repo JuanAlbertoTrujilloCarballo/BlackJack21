@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using static Program;
+﻿using System.Text;
 
 
 class Program
@@ -189,17 +188,34 @@ class Program
       
     }
         private static Baraja baraja = new Baraja();
-        private static JugadorBlackJack jugador;
+        private static JugadorBlackJack? jugador;
         private static Croupier croupier = new Croupier();
     static void Main(string[] args)
     {
-
-        //baraja.MostrarCartas();
-        Console.WriteLine("Partida de BlackJack");
+        Console.OutputEncoding = Encoding.UTF8;
+        Console.WriteLine("+------------------------------------+");
+        Console.WriteLine("| +-----+ ------------------         |");
+        Console.WriteLine("| |K    | JUEGO: Blackjack 21        |");
+        Console.WriteLine("| |  ♦  | LENGUAJE: C#               |");
+        Console.WriteLine("| |    K| AUTOR: Alberto Trujillo    |");
+        Console.WriteLine("| +-----+ ------------------         |");
+        Console.WriteLine("|         PROGRAMACIÓN Y MOTORES     |");
+        Console.WriteLine("+------------------------------------+");
         Console.WriteLine("Introduce tu nombre:");
         jugador = new JugadorBlackJack(Console.ReadLine() ?? "");
 
-        IniciarJuego();
+        Console.Clear();
+        baraja.Barajar();
+        croupier.SacarCartas(baraja);
+        croupier.SacarCartas(baraja);
+        croupier.CalcularPuntuación();
+        jugador.RobarCarta(baraja.RobarCarta());
+        jugador.RobarCarta(baraja.RobarCarta());
+        jugador.CalcularPuntuación();
+        croupier.MostrarCartas();
+        Console.WriteLine();
+        jugador.MostrarCartas();
+        Console.WriteLine();
 
         bool jugando = false;
         while (!jugando)
@@ -207,14 +223,17 @@ class Program
             Console.WriteLine($"Tienes {jugador.Puntuacion} puntos");
             if (jugador.Puntuacion == 21) break;
 
-            string respuesta = OtraCarta();
+            string pregunta = OtraCarta();
 
-            if (respuesta == "n") jugando = true;
+            if (pregunta == "n") jugando = true;
             else
             {
                 Console.Clear();
                 jugador.RobarCarta(baraja.RobarCarta());
-                MostrarBarajas();
+                croupier.MostrarCartas();
+                Console.WriteLine();
+                jugador.MostrarCartas();
+                Console.WriteLine();
             }
             jugador.CalcularPuntuación();
             if (jugador.Bust() || jugador.Puntuacion == 21) jugando = true;
@@ -225,49 +244,31 @@ class Program
         VerResultados();
     }
 
-    public static void IniciarJuego()
-    {
-        Console.Clear();
-        baraja.Barajar();
-        croupier.SacarCartas(baraja);
-        croupier.SacarCartas(baraja);
-        croupier.CalcularPuntuación();
-        jugador.RobarCarta(baraja.RobarCarta());
-        jugador.RobarCarta(baraja.RobarCarta());
-        jugador.CalcularPuntuación();
-        MostrarBarajas();
-    }
-
-    public static void MostrarBarajas()
-    {
-        croupier.MostrarCartas();
-        Console.WriteLine();
-        jugador.MostrarCartas();
-        Console.WriteLine();
-    }
-
     public static string OtraCarta()
     {
         Console.WriteLine("¿Quieres otra carta? (s/n)");
-        string respuesta = string.Empty;
-        while (respuesta != "s" && respuesta != "n")
+        string pregunta = "";
+        while (pregunta != "s" && pregunta != "n")
         {
-            respuesta = Console.ReadLine() ?? "".ToLower();
-            if (respuesta != "s" && respuesta != "n") Console.WriteLine("Escribe s o n");
+            pregunta = Console.ReadLine() ?? "".ToLower();
+            if (pregunta != "s" && pregunta != "n") Console.WriteLine("Escribe s o n");
         }
-        return respuesta;
+        return pregunta;
     }
 
     public static void VerResultados()
     {
         Console.Clear();
-        MostrarBarajas();
+        croupier.MostrarCartas();
+        Console.WriteLine();
+        jugador.MostrarCartas();
+        Console.WriteLine();
         Console.WriteLine($"Puntuación Croupier: {croupier.Puntuacion}");
         Console.WriteLine($"Puntuación {jugador.Nombre}: {jugador.Puntuacion}");
         if (jugador.Bust()) Console.WriteLine("Has sacado bust");
         if (croupier.Bust()) Console.WriteLine("El Croupier ha sacado bust");
 
-        if (jugador.Bust() && croupier.Bust()) Console.WriteLine("Empataste");
+        if (jugador.Bust() && croupier.Bust()) Console.WriteLine("Empataron");
         else if (!jugador.Bust() && croupier.Bust()) Console.WriteLine("Ganaste");
         else if (jugador.Bust() && !croupier.Bust()) Console.WriteLine("Perdiste");
         else
